@@ -51,7 +51,6 @@ mouser
 .cn
 ～
 ~
-4f1811c0
 taobao
 yageo
 epcos

@@ -11,7 +11,7 @@ Remark:  注意target_path = 'data\excel_write'要与   txt_filePath = r'D:\dufy
          保持一致
 """
 from data_operation import OperateExcel, function
-from data_operation.function import load_stop_word_list, label_new, fast_vec_standard
+from data_operation.function import load_stop_word_list, label_new, fast_vec_standard, standard
 # from data_operation import OperateTXT
 from data_operation.txt_operate import OperateTXT
 from data_operation.constant import label_name_forbid
@@ -31,8 +31,9 @@ class OperateExcelSubclass(OperateExcel):  # 重写函数
 
                 # if aa_label != 'nan':   # 不再进行标注与否的判断
                 # print(aa_label, '~~~~~~~')
-                aa_description = " ".join(line_read.split()[1:])
-                aa_description = fast_vec_standard(aa_description, stop_words)  # 标准化处理
+                aa_description = " ".join(line_read.split()[0:])
+                # aa_description = fast_vec_standard(aa_description, stop_words)  # 标准化处理
+                aa_description = standard(aa_description, stop_words)  # 标准化处理
 
                 print('最终写入行为：{}{}'.format(aa_description,'\n --------'))
                 aa_description_length = 0
@@ -41,9 +42,9 @@ class OperateExcelSubclass(OperateExcel):  # 重写函数
                         aa_description_length += 1
                 # print(length)
 
-                target_path_temp = target_path_temp + '\\' + 'corpus.txt'
+                target_path_temp = target_path_temp + '\\' + 'corpus_v1.txt'
                 # print(target_path, '-', aa_label, '!!!!')
-                if aa_description_length > 4:  # 选取训练数据的长度，大于3才算
+                if aa_description_length > 3:  # 选取训练数据的长度，大于3才算
                     OperateTXT().txt_write_line(target_path_temp, aa_description)
 
         except IOError as ex:
@@ -57,22 +58,22 @@ class OperateExcelSubclass(OperateExcel):  # 重写函数
 def excel_read2txt():
 
     # 先清空：
-    txt_filePath = r'D:\dufy\code\fasttext_vec\data\txt_file'  # 读取文件夹路径,
+    txt_filePath = r'D:\dufy\code\ft_BOM\data\ft_vec\txt_file'  # 读取文件夹路径
     function.files_clear(txt_filePath)
 
-    filePath = r'D:\dufy\code\fasttext_vec\data\bom'  # 读取文件夹路径!!!!!!!!!!!!
+    filePath = r'D:\dufy\code\ft_BOM\data\ft_vec\bom'  # 读取文件夹路径!!!!!!!!!!!!
     file_names = os.listdir(filePath)
 
     for i, name0 in enumerate(file_names):  # 文件夹下文件循环
         print('==========================')
         path = filePath + '\\' + name0
-        print('path为： ', path)
+        print('#', i, 'path为： ', path)
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         aa = OperateExcelSubclass(path)
         # aa.excel_data2temp_files()  # 生成temp @文件，为后续处理做准备
         aa.excel_write_in(txt_filePath)  # 读取当前excel覆盖写入
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        print('path为： ', path)
+        print('#', i, 'path为： ', path)
         print('==========================')
 
 if __name__ == "__main__":

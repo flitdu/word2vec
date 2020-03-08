@@ -31,27 +31,29 @@ def train_model_gensim():
 
 def train_model_ft():
     pass
-    model = fasttext.train_unsupervised(r'D:\dufy\code\ft_BOM\data\ft_vec\txt_file\corpus.txt',
-                                        epoch=5,
+    model = fasttext.train_unsupervised(r'D:\dufy\code\ft_BOM\data\ft_vec\txt_file\corpus_v1.txt',
+                                        epoch=5,  #5
                                         loss='ns',  # 采用 softmax 速度会很慢！！！
                                         lr=0.05,
                                         wordNgrams=2,
                                         minCount=1,  # 词频阈值, 小于该值在初始化时会过滤掉
                                         minn=3,     #  1
-                                        maxn=20)
+                                        maxn=10)
     # model.save_model(r'.\model\ft_vec.bin')
     model.save_model(r'D:\dufy\code\ft_BOM\model_vec\ft_vec_v1.bin')  # 版本号
     print('fasttext 训练结束....')
 
 
 if __name__ == "__main__":
+    pass
+    # excel_read2txt()
 
-    tag = 0
+    tag = 1
 
-    if tag == 0:
-        # train_model_ft()
+    if tag == 1:
+        train_model_ft()
 
-        model = fasttext.load_model(r'D:\dufy\code\ft_BOM\model_vec\ft_vec_v0.bin')
+        model = fasttext.load_model(r'D:\dufy\code\ft_BOM\model_vec\ft_vec_v1.bin')
 
         print(model.get_word_vector('3v'))
         print(model.words)
@@ -68,7 +70,7 @@ if __name__ == "__main__":
 
         while True:
             bom_line = input('输入待预测BOM行：')
-            aa_description = " ".join(bom_line.split()[1:])
+            aa_description = " ".join(bom_line.split()[0:])
             aa_description = fast_vec_standard(aa_description, stop_words)  # 标准化处理
             print(aa_description)
             if bom_line != 'end':
@@ -80,13 +82,15 @@ if __name__ == "__main__":
                         pn_judge = PN_if(j[1])
                         pn_tag.append(pn_judge)
                     print(pn_tag)
+                    p_k = 0
                     for index, j in enumerate(model.get_nearest_neighbors(i.lower())):
                         if pn_tag[index] == 1:
                             pass
                             print('{} ：\033[1;31m {}\033[0m'.format(j, pn_tag[index]))  # 显示红色
                         else:
                             print('{} ：\033[1;32m {}\033[0m'.format(j, pn_tag[index]))
-                    # print(i.lower(), ': \n', model.get_nearest_neighbors(i.lower()), '\n ------')
+                        p_k += pn_tag[index] * j[0]
+                    print('\033[1;32m 置信概率：{}\033[0m'.format(p_k/10))
                     print('\n ==============================')
                 # line_txt_list = []
                 # words1 = pseg.cut(bom_line)
@@ -101,7 +105,8 @@ if __name__ == "__main__":
                 break  # 结束循环
 
         pass
-    if tag == 1:
+    # 2： gensim 训练
+    if tag == 2:
 
         # train_model_gensim()
 
