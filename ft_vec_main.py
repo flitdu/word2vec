@@ -14,7 +14,7 @@ from gensim.test.utils import datapath
 from FTvec_data_read import excel_read2txt
 from jieba_pos import PN_if
 import jieba.posseg as pseg
-from data_operation.function import load_stop_word_list, label_new, fast_vec_standard
+from data_operation.function import load_stop_word_list, fast_vec_standard
 stop_words = load_stop_word_list("stopwords_subclass.txt")
 
 
@@ -31,16 +31,19 @@ def train_model_gensim():
 
 def train_model_ft():
     pass
-    model = fasttext.train_unsupervised(r'D:\dufy\code\ft_BOM\data\ft_vec\txt_file\corpus_v1.txt',
-                                        epoch=5,  #5
+    model = fasttext.train_unsupervised(r'D:\dufy\code\local\ft_BOM\data\ft_vec\txt_file\corpus_v4.txt',
+                                        epoch=15,  #5
                                         loss='ns',  # 采用 softmax 速度会很慢！！！
                                         lr=0.05,
                                         wordNgrams=2,
-                                        minCount=1,  # 词频阈值, 小于该值在初始化时会过滤掉
-                                        minn=3,     #  1
-                                        maxn=10)
+                                        minCount=2,  # 词频阈值, 小于该值在初始化时会过滤掉
+                                        minn=2,     #  1
+                                        maxn=5,
+                                        thread=30,
+                                        dim=150
+                                        )
     # model.save_model(r'.\model\ft_vec.bin')
-    model.save_model(r'D:\dufy\code\ft_BOM\model_vec\ft_vec_v1.bin')  # 版本号
+    model.save_model(r'D:\dufy\code\local\ft_BOM\model_vec\ft_vec_v4.bin')  # 版本号
     print('fasttext 训练结束....')
 
 
@@ -53,10 +56,10 @@ if __name__ == "__main__":
     if tag == 1:
         train_model_ft()
 
-        model = fasttext.load_model(r'D:\dufy\code\ft_BOM\model_vec\ft_vec_v1.bin')
+        model = fasttext.load_model(r'D:\dufy\code\local\ft_BOM\model_vec\ft_vec_v4.bin')
 
         print(model.get_word_vector('3v'))
-        print(model.words)
+        # print(model.words)
 
         print(model.get_nearest_neighbors('0402B104K160CT'.lower()))
         print(model.get_nearest_neighbors('0402B104K160Cj'.lower()))
@@ -67,6 +70,10 @@ if __name__ == "__main__":
         print(model.get_nearest_neighbors('262ly221k'.lower()))
         print(model.get_nearest_neighbors('50 v'.lower()))
         print(model.get_nearest_neighbors('50v'.lower()))
+
+        while True:
+            word = input('输入待判断词：').lower()
+            print(model.get_nearest_neighbors(word))
 
         while True:
             bom_line = input('输入待预测BOM行：')

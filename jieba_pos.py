@@ -16,7 +16,7 @@ import jieba.posseg as pseg
 print('加载型号词典.....')
 # jieba.load_userdict(r'.\data\fastvec_dict.txt')
 # jieba.load_userdict(r'D:\dufy\code\ft_BOM\data\ft_vec\dict\测试2.txt')
-jieba.load_userdict(r'D:\dufy\code\ft_BOM\data\ft_vec\dict\part_number.txt')
+# jieba.load_userdict(r'D:\dufy\code\ft_BOM\data\ft_vec\dict\part_number.txt')
 import re
 print('结束！！！,用时:{}s'.format(time.time()-start))
 # with open('测试.txt', 'r', encoding='utf-8') as fr:
